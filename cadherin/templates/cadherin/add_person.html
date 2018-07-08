@@ -1,0 +1,16 @@
+<h1>Add a new person</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'cadherin:add_person' %}" method="post">
+    {% csrf_token %}
+    First name: <input type="text" name="first_name"><br>
+    Last name: <input type="text" name="last_name"><br>
+    Role: <br>
+    <select name="role">
+        {% for role in latest_roles %}
+            <option value="{{ role.id }}">{{ role.name }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Add Person">
+</form>

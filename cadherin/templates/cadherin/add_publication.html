@@ -1,0 +1,9 @@
+<h1>Add a new publication</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'cadherin:add_pub' %}" method="post">
+    {% csrf_token %}
+    PMID: <input type="text" name="pm_id"><br>
+    <input type="submit" value="Add Publication">
+</form>

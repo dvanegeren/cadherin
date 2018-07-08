@@ -1,9 +1,9 @@
 {% if person %}
-    <h1>{{ person.name }}</h1>
+    <h1>{{ person.first_name }} {{ person.last_name }}</h1>
     <h2>Students</h2>
     <ul>
         {% for student in person.students.all %}
-            <li><a href="{% url 'person_detail' student.name %}">{{ student.name }}</a></li>
+            <li><a href="{% url 'cadherin:person_detail' student.id %}">{{ student.first_name }} {{ person.last_name }}</a></li>
         {% endfor %}
     </ul>
 {% endif %}
