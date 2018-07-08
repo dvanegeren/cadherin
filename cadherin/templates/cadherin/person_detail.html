@@ -1,0 +1,9 @@
+{% if person %}
+    <h1>{{ person.name }}</h1>
+    <h2>Students</h2>
+    <ul>
+        {% for student in person.students.all %}
+            <li><a href="{% url 'person_detail' student.name %}">{{ student.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}

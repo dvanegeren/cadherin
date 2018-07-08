@@ -1,0 +1,9 @@
+{% if latest_person_list %}
+    <ul>
+    {% for person in latest_person_list %}
+        <li><a href="{% url 'person_detail' person.name  %}">{{ person.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Nobody is home!</p>
+{% endif %}
