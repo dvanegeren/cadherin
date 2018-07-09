@@ -5,5 +5,7 @@
 <form action="{% url 'cadherin:add_pub' %}" method="post">
     {% csrf_token %}
     PMID: <input type="text" name="pm_id"><br>
+    PMCID: <input type="text" name="pmc_id"><br>
+    DOI: <input type="text" name="doi"><br><br>
     <input type="submit" value="Add Publication">
 </form>

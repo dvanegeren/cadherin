@@ -39,18 +39,29 @@ def add_person(request):
 
 
 def add_pub(request):
-    response_keys = request.POST.keys()
-    if 'pm_id' in response_keys:
-        pm_response = request.POST['pm_id']
-        new_pub = Publication()
-        new_pub.save()
-        new_pub.populate_fields_pm(pm_response)
-    elif 'pmc_id' in response_keys:
-        pass
-    elif 'doi' in response_keys:
-        pass
-    else:
+    try:
+        response_keys = request.POST.keys()
+        if 'pm_id' in response_keys and request.POST['pm_id']:
+            pm_response = request.POST['pm_id']
+            new_pub = Publication()
+            new_pub.save()
+            new_pub.populate_fields_pm(pm_response)
+            return HttpResponseRedirect(reverse('cadherin:index'))
+        elif 'pmc_id' in response_keys and request.POST['pmc_id']:
+            pmc_response = request.POST['pmc_id']
+            new_pub = Publication()
+            new_pub.save()
+            new_pub.populate_fields_pmc(pmc_response)
+            return HttpResponseRedirect(reverse('cadherin:index'))
+        elif 'doi' in response_keys and request.POST['doi']:
+            doi_response = request.POST['doi']
+            new_pub = Publication()
+            new_pub.save()
+            new_pub.populate_fields_doi(doi_response)
+            return HttpResponseRedirect(reverse('cadherin:index'))
+    except (KeyError, DataRetrievalException):
+        new_pub.delete()
         context = {'error_message': "You suck at forms."}
         return render(request, 'cadherin/add_publication.html', context)
-    return HttpResponseRedirect(reverse('cadherin:index'))
+    return render(request, 'cadherin/add_publication.html')
 
