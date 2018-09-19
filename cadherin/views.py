@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseRedirect, StreamingHttpResponse, JsonResponse
 from django.urls import reverse
 from .models import *
 from django.views import generic
+import csv
 
 # Create your views here.
 
@@ -20,9 +21,7 @@ class PersonListView(generic.ListView):
 
 
 def index(request):
-    latest_person_list = Person.objects.order_by('last_name')[:5]
-    context = {'latest_person_list': latest_person_list}
-    return render(request, 'cadherin/index.html', context)
+    return render(request, 'cadherin/index.html')
 
 
 def add_person(request):
@@ -64,4 +63,51 @@ def add_pub(request):
         context = {'error_message': "You suck at forms."}
         return render(request, 'cadherin/add_publication.html', context)
     return render(request, 'cadherin/add_publication.html')
+
+
+class Echo:
+    """An object that implements just the write method of the file-like
+    interface.
+    """
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
+
+
+def get_person_nodes_csv(request):
+    rows = [["name", "phd_advisor", "postdoc_advisor", "role", "id"]]
+    rows.extend([person.first_name + " " + person.last_name, person.phd_advisor_id,
+                 person.postdoc_advisor_id, person.role, person.id]
+                for person in Person.objects.all())
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = StreamingHttpResponse((writer.writerow(row) for row in rows),
+                                     content_type="text/csv")
+    response['Content-Disposition'] = 'attachment; filename="people.csv"'
+    return response
+
+
+def get_person_collaborators_csv(request):
+    rows = [["source", "target"]]
+    for person in Person.objects.all():
+        rows.extend([person.id, collab.id] for collab in person.collaborators.all())
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = StreamingHttpResponse((writer.writerow(row) for row in rows),
+                                     content_type="text/csv")
+    response['Content-Disposition'] = 'attachment; filename="collaborators.csv"'
+    return response
+
+
+def get_person_json_graph(request):
+    nodes = []
+    edges = []
+    for person in Person.objects.all():
+        nodes.append({"name": person.first_name + " " + person.last_name,
+                            "phd_advisor": person.phd_advisor_id,
+                            "postdoc_advisor": person.postdoc_advisor_id,
+                            "role": person.role.name, "id": person.id})
+        for collab in person.collaborators.all():
+            edges.append({"source": person.id, "target": collab.id})
+    return JsonResponse({"nodes": nodes, "links": edges})
 

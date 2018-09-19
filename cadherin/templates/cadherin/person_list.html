@@ -1,9 +1,15 @@
-{% if latest_person_list %}
-    <ul>
-    {% for person in latest_person_list %}
-        <li><a href="{% url 'cadherin:person_detail' person.id  %}">{{ person.first_name }} {{ person.last_name }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>Nobody is home!</p>
-{% endif %}
+{% extends "./base.html" %}
+
+{% block content %}
+    <div id="text_content">
+        {% if latest_person_list %}
+            <ul>
+            {% for person in latest_person_list %}
+                <li><a href="{% url 'cadherin:person_detail' person.id  %}">{{ person.first_name }} {{ person.last_name }}</a></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nobody is home!</p>
+        {% endif %}
+    </div>
+{% endblock %}

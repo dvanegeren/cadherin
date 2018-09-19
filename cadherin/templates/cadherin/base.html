@@ -1,0 +1,26 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'cadherin/main_style.css' %}" />
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <title>{% block title %}My amazing site{% endblock %}</title>
+</head>
+
+<body>
+    <div id="sidebar", class="sidebar">
+        {% block sidebar %}
+        <ul>
+            <li><a href="{% url 'cadherin:index' %}">Home</a></li>
+            <li><a href="{% url 'cadherin:add_pub' %}">Add publication</a></li>
+            <li><a href="{% url 'cadherin:person_list' %}">List of people</a></li>
+        </ul>
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

@@ -1,9 +1,17 @@
-{% if latest_person_list %}
-    <ul>
-    {% for person in latest_person_list %}
-        <li><a href="{% url 'cadherin:person_detail' person.id  %}">{{ person.first_name }} {{ person.last_name }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>Nobody is home!</p>
-{% endif %}
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}Hello world!{% endblock %}
+
+{% block content %}
+    <script>
+        var nodes_loc = "{% url 'cadherin:person_nodes' %}";
+        var collabs_loc = "{% url 'cadherin:person_collabs' %}";
+        var mis_loc = "{% static 'cadherin/miserables.json' %}";
+        var person_graph_loc = "{% url 'cadherin:person_graph' %}";
+    </script>
+
+    <svg width="960" height="600"></svg>
+    <script type="text/javascript" src="{% static 'cadherin/net_viz.js' %}"></script>
+
+{% endblock %}
